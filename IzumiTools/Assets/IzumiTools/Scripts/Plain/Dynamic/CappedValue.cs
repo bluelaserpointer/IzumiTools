@@ -50,25 +50,30 @@ namespace IzumiTools
         {
             Value = Max;
         }
-        public float AddAndReturnOverflow(float delta)
+        public float AddAndGetOverflow(float value)
         {
             float overflow;
-            _value = ExtendedMath.ClampAndGetOverflow(_value + delta, 0, _max, out overflow);
+            _value = ExtendedMath.ClampAndGetOverflow(_value + value, 0, _max, out overflow);
             return overflow;
         }
+        public float AddAndGetDelta(float value)
+        {
+            float oldValue = Value;
+            Value += value;
+            return Value - oldValue;
+        }
         /// <summary>
-        /// Transfer value to the other, ensures not exceeding source amount, target space, and specified toplimit;
+        /// Transfer value to the other as lot as possible, while not exceeding the amount of the source remaining, target space, and specified toplimit;
         /// </summary>
         /// <param name="target"></param>
-        /// <param name="maxAmount"></param>
+        /// <param name="maxValue"></param>
         /// <returns>Actual transfered amount</returns>
-        public float Transfer(CappedValue target, int maxAmount = int.MaxValue)
+        public float TransferTo(CappedValue target, float maxValue = int.MaxValue)
         {
-            float amount = Mathf.Min(maxAmount, Value, target.Space);
+            float amount = Mathf.Min(maxValue, Value, target.Space);
             Value -= amount;
             target.Value += amount;
             return amount;
         }
     }
-
 }
